@@ -258,6 +258,11 @@ nav a:not(.btn){display:none}.hero{padding-top:112px}.hero .wrap,.dre,.final{gri
 <dialog id="cvd" aria-labelledby="cvt">
  <div class="dh"><h3 id="cvt">Enviar currículo</h3><button type="button" class="x" id="cvx" aria-label="Fechar">&times;</button></div>
  <form class="cvf" id="cv" novalidate>
+  <input type="hidden" name="_subject" value="Novo currículo pelo site da Vindex">
+  <input type="hidden" name="_template" value="table">
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_next" value="https://dacunhaa.github.io/vindex-site/?cv=ok#vagas">
+  <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
   <div class="row2"><label>Nome completo<input name="nome" required autocomplete="name"></label><label>E-mail<input name="email" type="email" required autocomplete="email"></label></div>
   <div class="row2"><label>Telefone ou WhatsApp<input name="tel" type="tel" autocomplete="tel"></label>
   <label>Vaga de interesse<select name="vaga"><option>Analista de Operações</option><option>Banco de talentos</option></select></label></div>
@@ -354,17 +359,19 @@ document.getElementById("f").onsubmit=function(e){e.preventDefault();var f=e.tar
 window.open("https://wa.me/"+WHATS+"?text="+encodeURIComponent(m),"_blank")};
 
 // currículo
-var CV_ENDPOINT=""; // endereço do serviço que recebe o formulário (ex.: Formspree)
+var CV_ENDPOINT="https://formsubmit.co/rhvindex@gmail.com"; // encaminha o currículo para o e-mail do RH
 document.getElementById("cv").onsubmit=function(e){e.preventDefault();var f=e.target,m=document.getElementById("cvm"),fl=f.cv.files[0];
 var say=function(t,er){m.textContent=t;m.className="msg on"+(er?" er":"")};
 if(!f.nome.value||!f.email.value||!fl){say("Preencha nome, e-mail e anexe o currículo.",1);return}
 if(fl.size>5*1024*1024){say("O arquivo passa de 5 MB. Envie uma versão menor.",1);return}
-if(!CV_ENDPOINT){say("Pré-visualização: o envio será ativado quando o site for publicado.");return}
-fetch(CV_ENDPOINT,{method:"POST",body:new FormData(f),headers:{Accept:"application/json"}}).then(function(r){if(!r.ok)throw 0;say("Currículo enviado. Obrigado! Entraremos em contato se houver aderência.");f.reset()}).catch(function(){say("Não foi possível enviar. Tente de novo ou escreva para rhvindex@gmail.com.",1)})};
+say("Enviando...");
+f.action=CV_ENDPOINT;f.method="POST";f.enctype="multipart/form-data";f.submit()};
 
 // abrir e fechar o formulário de currículo
 var dlg=document.getElementById("cvd");
 document.querySelectorAll("[data-cv]").forEach(function(b){b.addEventListener("click",function(e){e.preventDefault();if(dlg.showModal)dlg.showModal();else dlg.setAttribute("open","")})});
+// volta do envio: confirma para quem mandou o currículo
+if(/[?&]cv=ok/.test(location.search)){var cm=document.getElementById("cvm");cm.textContent="Currículo enviado. Obrigado! Entraremos em contato se houver aderência.";cm.className="msg on";if(dlg.showModal)dlg.showModal();else dlg.setAttribute("open","")}
 document.getElementById("cvx").onclick=function(){dlg.close()};
 dlg.addEventListener("click",function(e){if(e.target===dlg)dlg.close()});
 </script>
